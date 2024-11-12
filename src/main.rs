@@ -1,12 +1,24 @@
-use std::time::Instant; 
+// src/main.rs
+
+mod domain;
+mod repository;
+mod service;
+
+use repository::user_repository_impl::UserRepositoryImpl;
+use service::user_service_impl::UserServiceImpl;
+use service::user_service::UserService;
 
 fn main() {
-    let start = Instant::now();
+    let user_repository = UserRepositoryImpl;
+    let user_service = UserServiceImpl::new(user_repository);
 
-    for i in 1..=1_000_000 {
-        println!("Looping {}", i); 
+    match user_service.create_user("asrofun".to_string(), "asrofune@example.com".to_string(), 1) {
+        Ok(user_id) => println!("User created with ID: {}", user_id),
+        Err(err) => println!("Error: {}", err),
     }
 
-    let duration = start.elapsed();
-    println!("Time processed: {:?}", duration);
+    match user_service.get_user_by_id(1) {
+        Ok(user) => println!("User found: {} with email {} and wid: {}", user.name, user.email, user.id.to_string()),
+        Err(err) => println!("Error: {}", err),
+    }
 }
