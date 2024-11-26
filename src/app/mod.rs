@@ -1,3 +1,2 @@
 mod database;
-pub use database::establish_connection;
-// pub mod establish_connection
+pub use database::establish_connection; 

@@ -7,29 +7,22 @@ use crate::schema::users::dsl::*;
 pub struct UserRepositoryImpl;
 
 impl UserRepository for UserRepositoryImpl {
-    
-    fn find_all (&self, connection: &mut PgConnection) -> Vec<User> {
+    fn find_all(&self, connection: &mut PgConnection) -> Result<Vec<User>, String> {
         users
-        .limit(10)
-        .load::<User>(connection)
-        .expect("Error loading users")
-        
+            .limit(10)
+            .load::<User>(connection)
+            .map_err(|err| format!("Error loading users: {}", err))
     }
-    
-    // fn create_user(&self, name: String, email: String) -> Result<u64, String> { 
-    //     println!("Creating user: {} with email {}", name, email);
-    //     Ok(1)
-    // }
+    fn find_filter(&self, connection: &mut PgConnection) -> Result<Vec<User>, String> {
+        users
+            .load::<User>(connection)
+            .map_err(|err| format!("Error loading users: {}", err))
+    }
 
-    // fn get_user_by_id(&self, id: u64) -> Result<User, String> { 
-    //     Ok(User::new(1, "arofun".to_string(), "asrofun@example.com".to_string()))
-    // }
-
-    // fn update_user(&self, id: u64, name: String, email: String) -> Result<(), String> { 
-    //     Ok(())
-    // }
-
-    // fn delete_user(&self, id: u64) -> Result<(), String> { 
-    //     Ok(())
-    // }
+    fn update_user(&self, connection: &mut PgConnection, user_id: i32, new_name: &str, new_email: &str) -> Result<usize, String> {
+        diesel::update(users.filter(id.eq(user_id)))
+            .set((name.eq(new_name), email.eq(new_email)))
+            .execute(connection)
+            .map_err(|e| e.to_string())
+    }
 }

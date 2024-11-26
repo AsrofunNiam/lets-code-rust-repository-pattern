@@ -1,5 +1,3 @@
-// src/main.rs
-
 mod domain;
 mod repository;
 mod service;
@@ -12,18 +10,30 @@ use repository::user_repository_impl::UserRepositoryImpl;
 use controller::user_controller::UserController;
 use service::user_service_impl::UserServiceImpl; 
 
-fn main() { 
-
-    let mut connection = app::establish_connection(); 
-     let repository = UserRepositoryImpl; 
-
+fn main() {
+    env_logger::init();
+    let mut connection = app::establish_connection();
+    let repository = UserRepositoryImpl;
     let controller = UserControllerImpl::new(UserServiceImpl::new(repository));
 
-    let data_controller =   controller.find_all(&mut connection);
-
-    for user in data_controller {
-        println!("ID: {}, Name: {}, Email: {}", user.id, user.name, user.email);
+    match controller.find_filter(&mut connection) {
+        Ok(users) => {
+            if users.is_empty() {
+                println!("No users found.");
+            } else {
+                for user in users {
+                    println!("ID: {}, Name: {}, Email: {}", user.id, user.name, user.email);
+                }
+            }
+        }
+        Err(err) => {
+            eprintln!("Error fetching users: {}", err);
+        }
     }
- 
 
-} 
+    // Update user with ID = 3
+    match controller.update_user(&mut connection, 3, "Updated", "updatedlagi@example.com") {
+        Ok(message) => println!("{}", message),
+        Err(err) => println!("Error: {}", err),
+    }
+}
