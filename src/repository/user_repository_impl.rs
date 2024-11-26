@@ -1,17 +1,29 @@
+use diesel::PgConnection;
+use diesel::prelude::*;
 use crate::repository::user_repository::UserRepository;
-use crate::domain::user::User;
+use crate::domain::user::User; 
+use crate::schema::users::dsl::*;
 
 pub struct UserRepositoryImpl;
 
 impl UserRepository for UserRepositoryImpl {
-    fn create_user(&self, name: String, email: String) -> Result<u64, String> { 
-        println!("Creating user: {} with email {}", name, email);
-        Ok(1)
+    
+    fn find_all (&self, connection: &mut PgConnection) -> Vec<User> {
+        users
+        .limit(10)
+        .load::<User>(connection)
+        .expect("Error loading users")
+        
     }
+    
+    // fn create_user(&self, name: String, email: String) -> Result<u64, String> { 
+    //     println!("Creating user: {} with email {}", name, email);
+    //     Ok(1)
+    // }
 
-    fn get_user_by_id(&self, id: u64) -> Result<User, String> { 
-        Ok(User::new(1, "arofun".to_string(), "asrofun@example.com".to_string()))
-    }
+    // fn get_user_by_id(&self, id: u64) -> Result<User, String> { 
+    //     Ok(User::new(1, "arofun".to_string(), "asrofun@example.com".to_string()))
+    // }
 
     // fn update_user(&self, id: u64, name: String, email: String) -> Result<(), String> { 
     //     Ok(())

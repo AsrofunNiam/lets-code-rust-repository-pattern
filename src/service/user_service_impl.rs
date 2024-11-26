@@ -1,12 +1,7 @@
-// use diesel::{PgConnection, QueryDsl};
-
-use diesel::{connection, prelude::*};
-
-// use crate::schema::users;
+use diesel::prelude::*;
 use crate::service::user_service::UserService;
 use crate::repository::user_repository::UserRepository;
-use crate::domain::user::User;
-use crate::schema::users::dsl::*;
+use crate::domain::user::User; 
 
 pub struct UserServiceImpl<R: UserRepository> {
     user_repository: R,
@@ -19,13 +14,11 @@ impl<R: UserRepository> UserServiceImpl<R> {
 }
 
 impl<R: UserRepository> UserService for UserServiceImpl<R> {
+
     fn find_all (&self, connection: &mut PgConnection) -> Vec<User> {
-        users
-        .limit(10)
-        .load::<User>(connection)
-        .expect("Error loading users")
-        
-    }
+        self.user_repository.find_all(connection)
+    } 
+    
     // fn create_user(&self, name: String, email: String, _id: u64) -> Result<u64, String> {
     //     self.user_repository.create_user(name, email)
     // }
