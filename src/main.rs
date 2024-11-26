@@ -4,7 +4,7 @@ mod service;
 mod schema;
 mod app;
 mod controller; 
- 
+  
 use controller::user_controller_impl::UserControllerImpl; 
 use repository::user_repository_impl::UserRepositoryImpl; 
 use controller::user_controller::UserController;
@@ -31,8 +31,14 @@ fn main() {
         }
     }
 
+    match controller.find_all(&mut connection) {
+        Ok(users) => {print!("{}", users.len())},
+        Err(err) => {println!("Error fetching users: {}", err)}
+        
+    }
+
     // Update user with ID = 3
-    match controller.update_user(&mut connection, 3, "Updated", "updatedlagi@example.com") {
+    match controller.update_user(&mut connection, 3, "Updated", "updatedagain@example.com") {
         Ok(message) => println!("{}", message),
         Err(err) => println!("Error: {}", err),
     }
