@@ -10,7 +10,7 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     fn get_user_by_id(&self, id: u64) -> Result<User, String> { 
-        Ok(User::new(id, "arofun".to_string(), "asrofun@example.com".to_string()))
+        Ok(User::new(1, "arofun".to_string(), "asrofun@example.com".to_string()))
     }
 
     // fn update_user(&self, id: u64, name: String, email: String) -> Result<(), String> { 

@@ -19,5 +19,6 @@ impl<R: ProductRepository> ProductService for ProductServiceImpl<R> {
 
     fn get_product_by_id(&self, id: String) -> Result<Product, String> {
         self.product_repository.get_product_by_id(id)
+        // let product = self.database.find_product_by_id(id.clone());
     }
 }
